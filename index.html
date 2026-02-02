@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Eden, will you be my Valentine? 💘</title>
+  <style>
+    :root {
+      --bg1: #ff5f8a;
+      --bg2: #ff2d6f;
+      --card: rgba(255, 255, 255, 0.92);
+      --shadow: 0 20px 60px rgba(0,0,0,.25);
+      --yes: #22c55e;
+      --yes2: #16a34a;
+      --no: #ef4444;
+      --no2: #dc2626;
+      --text: #111827;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      color: var(--text);
+      background:
+        radial-gradient(1200px 800px at 15% 20%, rgba(255,255,255,.25), transparent 60%),
+        radial-gradient(900px 700px at 85% 30%, rgba(255,255,255,.22), transparent 55%),
+        linear-gradient(135deg, var(--bg1), var(--bg2));
+      overflow: hidden;
+    }
+
+    /* Floating hearts */
+    .heart {
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      transform: rotate(45deg);
+      opacity: .25;
+      animation: floatUp linear infinite;
+      pointer-events: none;
+      filter: blur(.2px);
+    }
+    .heart::before,
+    .heart::after {
+      content: "";
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      background: rgba(255,255,255,.9);
+      border-radius: 50%;
+    }
+    .heart::before { left: -9px; top: 0; }
+    .heart::after  { left: 0; top: -9px; }
+    .heart { background: rgba(255,255,255,.9); }
+    @keyframes floatUp {
+      from { transform: translateY(120vh) rotate(45deg); }
+      to   { transform: translateY(-140px) rotate(45deg); }
+    }
+
+    .card {
+      position: relative;
+      width: min(720px, calc(100vw - 32px));
+      border-radius: 28px;
+      background: var(--card);
+      box-shadow: var(--shadow);
+      padding: 32px 24px 26px;
+      text-align: center;
+      backdrop-filter: blur(8px);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255, 45, 111, .10);
+      border: 1px solid rgba(255, 45, 111, .20);
+      font-weight: 600;
+      letter-spacing: .2px;
+    }
+
+    h1 {
+      margin: 14px 0 8px;
+      font-size: clamp(28px, 5vw, 44px);
+      line-height: 1.05;
+    }
+    p {
+      margin: 0 auto 18px;
+      max-width: 52ch;
+      font-size: clamp(16px, 2.2vw, 18px);
+      opacity: .9;
+    }
+
+    .playground {
+      position: relative;
+      width: min(520px, 100%);
+      height: 220px;
+      margin: 18px auto 6px;
+      border-radius: 22px;
+      background: linear-gradient(180deg, rgba(255,45,111,.08), rgba(34,197,94,.06));
+      border: 1px solid rgba(17,24,39,.08);
+      overflow: hidden;
+    }
+
+    .btn {
+      position: absolute;
+      padding: 14px 22px;
+      border: 0;
+      border-radius: 999px;
+      font-size: 18px;
+      font-weight: 800;
+      cursor: pointer;
+      user-select: none;
+      transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
+      box-shadow: 0 14px 28px rgba(0,0,0,.14);
+      will-change: transform;
+    }
+    .btn:active { transform: translateY(1px) scale(.99); }
+
+    .btn-yes {
+      left: 22%;
+      top: 58%;
+      transform: translate(-50%, -50%);
+      background: linear-gradient(180deg, var(--yes), var(--yes2));
+      color: white;
+    }
+    .btn-no {
+      left: 78%;
+      top: 58%;
+      transform: translate(-50%, -50%);
+      background: linear-gradient(180deg, var(--no), var(--no2));
+      color: white;
+    }
+
+    .hint {
+      margin-top: 10px;
+      font-size: 14px;
+      opacity: .75;
+    }
+
+    /* Success screen */
+    .success {
+      display: none;
+      margin-top: 14px;
+      padding: 18px 14px;
+      border-radius: 22px;
+      background: rgba(34,197,94,.10);
+      border: 1px solid rgba(34,197,94,.18);
+    }
+    .success h2 {
+      margin: 0 0 10px;
+      font-size: clamp(26px, 4vw, 38px);
+    }
+    .success img {
+      width: min(420px, 92%);
+      border-radius: 18px;
+      box-shadow: 0 16px 40px rgba(0,0,0,.18);
+    }
+
+    .footer {
+      margin-top: 14px;
+      font-size: 13px;
+      opacity: .7;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- floating hearts -->
+  <script>
+    (function spawnHearts() {
+      const count = 18;
+      for (let i = 0; i < count; i++) {
+        const h = document.createElement("div");
+        h.className = "heart";
+        const size = 10 + Math.random() * 18;
+        h.style.width = size + "px";
+        h.style.height = size + "px";
+        h.style.left = (Math.random() * 100) + "vw";
+        h.style.animationDuration = (6 + Math.random() * 8) + "s";
+        h.style.animationDelay = (-Math.random() * 12) + "s";
+        h.style.opacity = (0.12 + Math.random() * 0.25).toFixed(2);
+        document.body.appendChild(h);
+      }
+    })();
+  </script>
+
+  <main class="card" role="main" aria-label="Valentine question">
+    <div class="badge">💘 Valentine Dispatch 💌</div>
+    <h1>Eden, will you be my Valentine?</h1>
+    <p>
+      One question. One correct answer.
+      Choose wisely, my love. 😄
+    </p>
+
+    <section class="playground" id="playground" aria-label="Buttons area">
+      <button class="btn btn-yes" id="yesBtn" type="button">Yes 💚</button>
+      <button class="btn btn-no" id="noBtn" type="button" aria-label="No (not allowed)">No 💔</button>
+    </section>
+
+    <div class="hint" id="hint">Tip: “No” is… unavailable.</div>
+
+    <section class="success" id="success" aria-live="polite">
+      <h2>WOOHOOOO! 🎉</h2>
+      <img id="woohooGif" alt="Homer going woohoo" />
+      <div class="footer">Now it’s official. 💞</div>
+    </section>
+  </main>
+
+  <script>
+    const playground = document.getElementById("playground");
+    const yesBtn = document.getElementById("yesBtn");
+    const noBtn = document.getElementById("noBtn");
+    const success = document.getElementById("success");
+    const hint = document.getElementById("hint");
+    const gif = document.getElementById("woohooGif");
+
+    // Prefer local gif if you add it to the repo; fallback to a remote gif if not.
+    const localGif = "homer-woohoo.gif";
+    const remoteFallbackGif = "https://media.giphy.com/media/5GoVLqeAOo6PK/giphy.gif";
+
+    // Try local first; if it fails, use remote.
+    gif.src = localGif;
+    gif.addEventListener("error", () => { gif.src = remoteFallbackGif; }, { once: true });
+
+    let noDodges = 0;
+
+    function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }
+
+    function moveNoButton() {
+      const rect = playground.getBoundingClientRect();
+
+      // Keep the button inside the playground with padding
+      const pad = 18;
+      const btnRect = noBtn.getBoundingClientRect();
+      const maxX = rect.width - btnRect.width - pad;
+      const maxY = rect.height - btnRect.height - pad;
+
+      const x = pad + Math.random() * maxX;
+      const y = pad + Math.random() * maxY;
+
+      noBtn.style.left = x + "px";
+      noBtn.style.top = y + "px";
+      noBtn.style.transform = "translate(0, 0)";
+
+      noDodges++;
+      // Make YES slightly bigger each dodge (psychological inevitability)
+      const scale = clamp(1 + noDodges * 0.08, 1, 1.8);
+      yesBtn.style.transform = `translate(-50%, -50%) scale(${scale})`;
+      yesBtn.style.filter = "brightness(1.02)";
+
+      const taunts = [
+        "Nice try 😇",
+        "Nope 😌",
+        "Denied 💅",
+        "Not today 💘",
+        "The universe says YES 🌌",
+        "Incorrect answer 🙃",
+      ];
+      hint.textContent = taunts[Math.floor(Math.random() * taunts.length)];
+    }
+
+    // Make "No" effectively unclickable:
+    // - On hover/touchstart/mousedown it jumps away
+    ["mouseenter", "mousedown", "touchstart", "pointerdown"].forEach(evt => {
+      noBtn.addEventListener(evt, (e) => {
+        e.preventDefault();
+        moveNoButton();
+      }, { passive: false });
+    });
+
+    // If someone somehow clicks "No" (keyboard etc), also dodge
+    noBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      moveNoButton();
+    });
+
+    yesBtn.addEventListener("click", () => {
+      playground.style.display = "none";
+      hint.style.display = "none";
+      success.style.display = "block";
+      // little confetti-ish feel via quick wiggle
+      success.animate(
+        [{ transform: "scale(0.98)" }, { transform: "scale(1.02)" }, { transform: "scale(1)" }],
+        { duration: 420, easing: "ease-out" }
+      );
+    });
+  </script>
+</body>
+</html>
